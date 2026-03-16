@@ -1,12 +1,12 @@
 /**
  * Variables Configuration
  * =======================
- * 
+ *
  * CENTRAL PLACE TO DEFINE ALL SHARED VARIABLES
- * 
+ *
  * This file defines all variables that can be shared across sections.
  * AI agents should read this file to understand what variables are available.
- * 
+ *
  * USAGE:
  * 1. Define variables here with their default values and metadata
  * 2. Use them in any section with: const x = useVar('variableName', defaultValue)
@@ -55,106 +55,179 @@ export interface VariableDefinition {
  * =====================================================
  * 🎯 DEFINE YOUR VARIABLES HERE
  * =====================================================
- * 
- * SUPPORTED TYPES:
- * 
- * 1. NUMBER (slider):
- *    { defaultValue: 5, type: 'number', min: 0, max: 10, step: 1 }
- * 
- * 2. TEXT (free text):
- *    { defaultValue: 'Hello', type: 'text', placeholder: 'Enter text...' }
- * 
- * 3. SELECT (dropdown):
- *    { defaultValue: 'sine', type: 'select', options: ['sine', 'cosine', 'tangent'] }
- * 
- * 4. BOOLEAN (toggle):
- *    { defaultValue: true, type: 'boolean' }
- * 
- * 5. ARRAY (list of numbers):
- *    { defaultValue: [1, 2, 3], type: 'array' }
- * 
- * 6. OBJECT (complex data):
- *    { defaultValue: { x: 5, y: 10 }, type: 'object', schema: '{ x: number, y: number }' }
  */
 export const variableDefinitions: Record<string, VariableDefinition> = {
     // ========================================
-    // ADD YOUR VARIABLES HERE
+    // SECTION 1: What Makes a Shape 3D?
     // ========================================
 
-    // Uncomment and modify these examples for your lesson:
-
-    /*
-    // ─────────────────────────────────────────
-    // NUMBER - Use with sliders
-    // ─────────────────────────────────────────
-    myValue: {
-        defaultValue: 5,
-        type: 'number',
-        label: 'My Value',
-        description: 'A number that controls something',
-        unit: 'm',           // optional unit display
-        min: 0,
-        max: 10,
-        step: 0.5,
-    },
-
-    // ─────────────────────────────────────────
-    // TEXT - Free text input
-    // ─────────────────────────────────────────
-    lessonTitle: {
-        defaultValue: 'My Lesson',
+    // Highlight variable for linking prose to cube parts
+    cubeHighlight: {
+        defaultValue: '',
         type: 'text',
-        label: 'Lesson Title',
-        description: 'The title of your lesson',
-        placeholder: 'Enter a title...',
+        label: 'Cube Highlight',
+        description: 'Active highlight ID for cube parts',
+        color: '#62D0AD',
     },
 
-    // ─────────────────────────────────────────
-    // SELECT - Dropdown with options
-    // ─────────────────────────────────────────
-    difficulty: {
-        defaultValue: 'medium',
+    // ========================================
+    // SECTION 2: Unfolding a Cube
+    // ========================================
+
+    // Fold progress for the animated cube net
+    foldProgress: {
+        defaultValue: 0,
+        type: 'number',
+        label: 'Fold Progress',
+        description: 'Controls how much the cube is folded (0 = flat net, 1 = complete cube)',
+        min: 0,
+        max: 1,
+        step: 0.01,
+        color: '#8E90F5',
+    },
+
+    // ========================================
+    // SECTION 3: Which Nets Work?
+    // ========================================
+
+    // Selected net pattern to test
+    selectedNetPattern: {
+        defaultValue: 'cross',
         type: 'select',
-        label: 'Difficulty',
-        description: 'The difficulty level of the lesson',
-        options: ['easy', 'medium', 'hard', 'expert'],
+        label: 'Net Pattern',
+        description: 'The currently selected net pattern to test',
+        options: ['cross', 't-shape', 'zigzag', 'line', 'l-shape', 'stairs'],
+        color: '#F7B23B',
     },
 
-    // ─────────────────────────────────────────
-    // BOOLEAN - Toggle switch
-    // ─────────────────────────────────────────
-    showHints: {
-        defaultValue: true,
-        type: 'boolean',
-        label: 'Show Hints',
-        description: 'Toggle to show or hide hints',
+    // Fold progress for the net testing
+    netFoldProgress: {
+        defaultValue: 0,
+        type: 'number',
+        label: 'Net Fold Progress',
+        description: 'Controls the fold animation for testing nets',
+        min: 0,
+        max: 1,
+        step: 0.01,
+        color: '#AC8BF9',
     },
 
-    // ─────────────────────────────────────────
-    // ARRAY - List of numbers
-    // ─────────────────────────────────────────
-    dataPoints: {
-        defaultValue: [1, 4, 9, 16, 25],
-        type: 'array',
-        label: 'Data Points',
-        description: 'Y-values for plotting a graph',
+    // ========================================
+    // SECTION 4: Beyond the Cube
+    // ========================================
+
+    // Selected 3D shape for exploration
+    selectedShape: {
+        defaultValue: 'pyramid',
+        type: 'select',
+        label: 'Selected Shape',
+        description: 'The 3D shape to explore',
+        options: ['pyramid', 'triangular-prism', 'rectangular-prism'],
+        color: '#F8A0CD',
     },
 
-    // ─────────────────────────────────────────
-    // OBJECT - Complex structured data
-    // ─────────────────────────────────────────
-    graphSettings: {
-        defaultValue: { 
-            xMin: -10, 
-            xMax: 10, 
-            showGrid: true 
-        },
-        type: 'object',
-        label: 'Graph Settings',
-        description: 'Configuration for the graph display',
-        schema: '{ xMin: number, xMax: number, showGrid: boolean }',
+    // Fold progress for the shape exploration
+    shapeFoldProgress: {
+        defaultValue: 0,
+        type: 'number',
+        label: 'Shape Fold Progress',
+        description: 'Controls the fold animation for the selected shape',
+        min: 0,
+        max: 1,
+        step: 0.01,
+        color: '#62CCF9',
     },
-    */
+
+    // ========================================
+    // ASSESSMENT QUESTIONS
+    // ========================================
+
+    // Section 1 questions
+    answerCubeFaces: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Cube Faces Answer',
+        description: 'Student answer for how many faces a cube has',
+        placeholder: '?',
+        correctAnswer: '6',
+        color: '#62D0AD',
+    },
+
+    answerCubeEdges: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Cube Edges Answer',
+        description: 'Student answer for how many edges a cube has',
+        placeholder: '?',
+        correctAnswer: '12',
+        color: '#8E90F5',
+    },
+
+    answerCubeVertices: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Cube Vertices Answer',
+        description: 'Student answer for how many vertices a cube has',
+        placeholder: '?',
+        correctAnswer: '8',
+        color: '#F7B23B',
+    },
+
+    // Section 2 questions
+    answer2dShapeChoice: {
+        defaultValue: '',
+        type: 'select',
+        label: '2D Shape Choice',
+        description: 'Student answer for what 2D shape makes a cube face',
+        placeholder: '?',
+        correctAnswer: 'square',
+        options: ['triangle', 'square', 'rectangle', 'circle'],
+        color: '#AC8BF9',
+    },
+
+    answerNetSquares: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Net Squares Answer',
+        description: 'Student answer for how many squares in a cube net',
+        placeholder: '?',
+        correctAnswer: '6',
+        color: '#F8A0CD',
+    },
+
+    // Section 3 questions
+    answerWhyLineFails: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Why Line Fails',
+        description: 'Student answer for why a line of 6 squares cannot fold into a cube',
+        placeholder: '?',
+        correctAnswer: 'overlap',
+        options: ['too-few-squares', 'overlap', 'gaps', 'wrong-shape'],
+        color: '#62CCF9',
+    },
+
+    // Section 4 questions
+    answerPyramidFaces: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Pyramid Faces Answer',
+        description: 'Student answer for how many faces a square pyramid has',
+        placeholder: '?',
+        correctAnswer: '5',
+        color: '#F4A89A',
+    },
+
+    answerPrismShape: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Prism Shape Choice',
+        description: 'Student answer for what shape the ends of a triangular prism are',
+        placeholder: '?',
+        correctAnswer: 'triangle',
+        options: ['square', 'triangle', 'rectangle', 'pentagon'],
+        color: '#A8D5A2',
+    },
 };
 
 /**
