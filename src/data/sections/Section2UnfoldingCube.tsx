@@ -93,13 +93,6 @@ function FoldingCubeNet({ progress }: { progress: number }) {
                 </mesh>
             </group>
 
-            {/* Edges - only visible when fully assembled (progress === 1) */}
-            {progress >= 1 && (
-                <lineSegments position={[0, half, 0]}>
-                    <edgesGeometry args={[new THREE.BoxGeometry(size, size, size)]} />
-                    <lineBasicMaterial color="#475569" />
-                </lineSegments>
-            )}
         </group>
     );
 }
