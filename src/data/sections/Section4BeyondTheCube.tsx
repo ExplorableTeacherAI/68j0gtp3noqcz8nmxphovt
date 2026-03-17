@@ -32,53 +32,58 @@ const SHAPE_COLORS = {
 
 // Square Pyramid folding
 function FoldingPyramid({ progress }: { progress: number }) {
-    const foldAngle = (Math.PI / 2 - Math.atan(Math.sqrt(2))) * progress; // Correct angle for pyramid
+    // For a square pyramid, the faces need to fold to about 54.7 degrees (arctan(sqrt(2)))
+    const targetAngle = Math.atan(Math.sqrt(2));
+    const foldAngle = targetAngle * progress;
     const size = 1;
-    const halfSize = size / 2;
-    const triangleHeight = size * Math.sqrt(3) / 2;
+    const half = size / 2;
+    const gap = 0.01;
+
+    // Triangle height for equilateral-ish triangles
+    const triHeight = size * 0.866; // sqrt(3)/2
 
     // Triangle geometry for pyramid faces
     const triangleShape = new THREE.Shape();
-    triangleShape.moveTo(-halfSize, 0);
-    triangleShape.lineTo(halfSize, 0);
-    triangleShape.lineTo(0, triangleHeight);
-    triangleShape.lineTo(-halfSize, 0);
+    triangleShape.moveTo(-half, 0);
+    triangleShape.lineTo(half, 0);
+    triangleShape.lineTo(0, triHeight);
+    triangleShape.lineTo(-half, 0);
 
     return (
-        <group position={[0, progress * 0.3, 0]}>
+        <group position={[0, progress * 0.4, 0]}>
             {/* Base - square */}
-            <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                <planeGeometry args={[size, size]} />
+            <mesh position={[0, gap, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[size * 0.98, size * 0.98]} />
                 <meshStandardMaterial color={SHAPE_COLORS.base} side={THREE.DoubleSide} />
             </mesh>
 
-            {/* Front triangle */}
-            <group position={[0, 0, halfSize]} rotation={[foldAngle * 1.2, 0, 0]}>
-                <mesh position={[0, triangleHeight / 2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            {/* Front triangle - pivots from front edge of base */}
+            <group position={[0, 0, half]} rotation={[foldAngle, 0, 0]}>
+                <mesh position={[0, 0, triHeight / 2]} rotation={[-Math.PI / 2, 0, 0]}>
                     <shapeGeometry args={[triangleShape]} />
                     <meshStandardMaterial color={SHAPE_COLORS.side1} side={THREE.DoubleSide} />
                 </mesh>
             </group>
 
-            {/* Back triangle */}
-            <group position={[0, 0, -halfSize]} rotation={[-foldAngle * 1.2, 0, 0]}>
-                <mesh position={[0, triangleHeight / 2, 0]} rotation={[-Math.PI / 2, Math.PI, 0]}>
+            {/* Back triangle - pivots from back edge of base */}
+            <group position={[0, 0, -half]} rotation={[-foldAngle, 0, 0]}>
+                <mesh position={[0, 0, -triHeight / 2]} rotation={[-Math.PI / 2, Math.PI, 0]}>
                     <shapeGeometry args={[triangleShape]} />
                     <meshStandardMaterial color={SHAPE_COLORS.side2} side={THREE.DoubleSide} />
                 </mesh>
             </group>
 
-            {/* Left triangle */}
-            <group position={[-halfSize, 0, 0]} rotation={[0, 0, -foldAngle * 1.2]}>
-                <mesh position={[-triangleHeight / 2, 0, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+            {/* Left triangle - pivots from left edge of base */}
+            <group position={[-half, 0, 0]} rotation={[0, 0, foldAngle]}>
+                <mesh position={[-triHeight / 2, 0, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
                     <shapeGeometry args={[triangleShape]} />
                     <meshStandardMaterial color={SHAPE_COLORS.side3} side={THREE.DoubleSide} />
                 </mesh>
             </group>
 
-            {/* Right triangle */}
-            <group position={[halfSize, 0, 0]} rotation={[0, 0, foldAngle * 1.2]}>
-                <mesh position={[triangleHeight / 2, 0, 0]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]}>
+            {/* Right triangle - pivots from right edge of base */}
+            <group position={[half, 0, 0]} rotation={[0, 0, -foldAngle]}>
+                <mesh position={[triHeight / 2, 0, 0]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]}>
                     <shapeGeometry args={[triangleShape]} />
                     <meshStandardMaterial color={SHAPE_COLORS.side4} side={THREE.DoubleSide} />
                 </mesh>
@@ -89,53 +94,57 @@ function FoldingPyramid({ progress }: { progress: number }) {
 
 // Triangular Prism folding
 function FoldingTriangularPrism({ progress }: { progress: number }) {
-    const foldAngle = (Math.PI / 2) * progress;
+    // For a triangular prism with equilateral triangle ends, sides fold to 60 degrees
+    const foldAngle = (Math.PI / 3) * progress; // 60 degrees
+    const endFoldAngle = (Math.PI / 2) * progress;
     const size = 1;
-    const halfSize = size / 2;
-    const prismLength = size * 1.5;
+    const half = size / 2;
+    const gap = 0.01;
+    const length = size * 1.5;
+    const triHeight = size * 0.866; // sqrt(3)/2
 
     // Triangle geometry for end faces
     const triangleShape = new THREE.Shape();
-    triangleShape.moveTo(-halfSize, 0);
-    triangleShape.lineTo(halfSize, 0);
-    triangleShape.lineTo(0, size * Math.sqrt(3) / 2);
-    triangleShape.lineTo(-halfSize, 0);
+    triangleShape.moveTo(-half, 0);
+    triangleShape.lineTo(half, 0);
+    triangleShape.lineTo(0, triHeight);
+    triangleShape.lineTo(-half, 0);
 
     return (
         <group position={[0, progress * 0.4, 0]} rotation={[0, Math.PI / 4, 0]}>
             {/* Bottom rectangle */}
-            <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                <planeGeometry args={[size, prismLength]} />
+            <mesh position={[0, gap, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[size * 0.98, length * 0.98]} />
                 <meshStandardMaterial color={SHAPE_COLORS.base} side={THREE.DoubleSide} />
             </mesh>
 
-            {/* Left rectangle - folds up */}
-            <group position={[-halfSize, 0, 0]} rotation={[0, 0, -foldAngle * 1.2]}>
-                <mesh position={[-halfSize, 0, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
-                    <planeGeometry args={[size, prismLength]} />
+            {/* Left rectangle - folds up from left edge */}
+            <group position={[-half, 0, 0]} rotation={[0, 0, foldAngle]}>
+                <mesh position={[-half, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[size * 0.98, length * 0.98]} />
                     <meshStandardMaterial color={SHAPE_COLORS.side1} side={THREE.DoubleSide} />
                 </mesh>
             </group>
 
-            {/* Right rectangle - folds up */}
-            <group position={[halfSize, 0, 0]} rotation={[0, 0, foldAngle * 1.2]}>
-                <mesh position={[halfSize, 0, 0]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]}>
-                    <planeGeometry args={[size, prismLength]} />
+            {/* Right rectangle - folds up from right edge */}
+            <group position={[half, 0, 0]} rotation={[0, 0, -foldAngle]}>
+                <mesh position={[half, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[size * 0.98, length * 0.98]} />
                     <meshStandardMaterial color={SHAPE_COLORS.side2} side={THREE.DoubleSide} />
                 </mesh>
             </group>
 
-            {/* Front triangle end */}
-            <group position={[0, 0, prismLength / 2]} rotation={[foldAngle, 0, 0]}>
-                <mesh position={[0, size * Math.sqrt(3) / 4, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            {/* Front triangle end - pivots from front edge */}
+            <group position={[0, 0, length / 2]} rotation={[endFoldAngle, 0, 0]}>
+                <mesh position={[0, 0, triHeight / 2]} rotation={[-Math.PI / 2, 0, 0]}>
                     <shapeGeometry args={[triangleShape]} />
                     <meshStandardMaterial color={SHAPE_COLORS.end1} side={THREE.DoubleSide} />
                 </mesh>
             </group>
 
-            {/* Back triangle end */}
-            <group position={[0, 0, -prismLength / 2]} rotation={[-foldAngle, 0, 0]}>
-                <mesh position={[0, size * Math.sqrt(3) / 4, 0]} rotation={[-Math.PI / 2, Math.PI, 0]}>
+            {/* Back triangle end - pivots from back edge */}
+            <group position={[0, 0, -length / 2]} rotation={[-endFoldAngle, 0, 0]}>
+                <mesh position={[0, 0, -triHeight / 2]} rotation={[-Math.PI / 2, Math.PI, 0]}>
                     <shapeGeometry args={[triangleShape]} />
                     <meshStandardMaterial color={SHAPE_COLORS.end2} side={THREE.DoubleSide} />
                 </mesh>
@@ -150,50 +159,51 @@ function FoldingRectangularPrism({ progress }: { progress: number }) {
     const width = 1;
     const height = 0.6;
     const depth = 1.4;
+    const gap = 0.01;
 
     return (
-        <group position={[0, progress * 0.3, 0]}>
+        <group position={[0, progress * height / 2, 0]}>
             {/* Bottom */}
-            <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                <planeGeometry args={[width, depth]} />
+            <mesh position={[0, gap, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[width * 0.98, depth * 0.98]} />
                 <meshStandardMaterial color={SHAPE_COLORS.base} side={THREE.DoubleSide} />
             </mesh>
 
-            {/* Front */}
+            {/* Front - pivots from front edge */}
             <group position={[0, 0, depth / 2]} rotation={[foldAngle, 0, 0]}>
-                <mesh position={[0, height / 2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                    <planeGeometry args={[width, height]} />
+                <mesh position={[0, 0, height / 2]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[width * 0.98, height * 0.98]} />
                     <meshStandardMaterial color={SHAPE_COLORS.side1} side={THREE.DoubleSide} />
                 </mesh>
-                {/* Top from front */}
-                <group position={[0, height, 0]} rotation={[foldAngle, 0, 0]}>
-                    <mesh position={[0, depth / 2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                        <planeGeometry args={[width, depth]} />
+                {/* Top - attached to front, folds over */}
+                <group position={[0, 0, height]} rotation={[foldAngle, 0, 0]}>
+                    <mesh position={[0, 0, depth / 2]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[width * 0.98, depth * 0.98]} />
                         <meshStandardMaterial color={SHAPE_COLORS.side3} side={THREE.DoubleSide} />
                     </mesh>
                 </group>
             </group>
 
-            {/* Back */}
+            {/* Back - pivots from back edge */}
             <group position={[0, 0, -depth / 2]} rotation={[-foldAngle, 0, 0]}>
-                <mesh position={[0, height / 2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                    <planeGeometry args={[width, height]} />
+                <mesh position={[0, 0, -height / 2]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[width * 0.98, height * 0.98]} />
                     <meshStandardMaterial color={SHAPE_COLORS.side2} side={THREE.DoubleSide} />
                 </mesh>
             </group>
 
-            {/* Left */}
-            <group position={[-width / 2, 0, 0]} rotation={[0, 0, -foldAngle]}>
-                <mesh position={[-height / 2, 0, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
-                    <planeGeometry args={[height, depth]} />
+            {/* Left - pivots from left edge */}
+            <group position={[-width / 2, 0, 0]} rotation={[0, 0, foldAngle]}>
+                <mesh position={[-height / 2, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[height * 0.98, depth * 0.98]} />
                     <meshStandardMaterial color={SHAPE_COLORS.end1} side={THREE.DoubleSide} />
                 </mesh>
             </group>
 
-            {/* Right */}
-            <group position={[width / 2, 0, 0]} rotation={[0, 0, foldAngle]}>
-                <mesh position={[height / 2, 0, 0]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]}>
-                    <planeGeometry args={[height, depth]} />
+            {/* Right - pivots from right edge */}
+            <group position={[width / 2, 0, 0]} rotation={[0, 0, -foldAngle]}>
+                <mesh position={[height / 2, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[height * 0.98, depth * 0.98]} />
                     <meshStandardMaterial color={SHAPE_COLORS.end2} side={THREE.DoubleSide} />
                 </mesh>
             </group>

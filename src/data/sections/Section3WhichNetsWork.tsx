@@ -63,53 +63,54 @@ function FoldingAttempt({ pattern, progress }: { pattern: string; progress: numb
 
     const foldAngle = (Math.PI / 2) * progress;
     const size = 0.9;
-    const halfSize = size / 2;
+    const half = size / 2;
+    const gap = 0.01;
 
     // For the cross pattern (works)
     if (pattern === "cross") {
         return (
-            <group position={[0, progress * 0.5, 0]}>
-                {/* Base */}
-                <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                    <planeGeometry args={[size, size]} />
+            <group position={[0, progress * half, 0]}>
+                {/* Base - center of the cross */}
+                <mesh position={[0, gap, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[size * 0.98, size * 0.98]} />
                     <meshStandardMaterial color={SQUARE_COLORS[0]} side={THREE.DoubleSide} />
                 </mesh>
 
-                {/* Front */}
-                <group position={[0, 0, halfSize]} rotation={[foldAngle, 0, 0]}>
-                    <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                        <planeGeometry args={[size, size]} />
+                {/* Front - folds up from front edge */}
+                <group position={[0, 0, half]} rotation={[foldAngle, 0, 0]}>
+                    <mesh position={[0, 0, half]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[size * 0.98, size * 0.98]} />
                         <meshStandardMaterial color={SQUARE_COLORS[1]} side={THREE.DoubleSide} />
                     </mesh>
-                    {/* Top from front */}
-                    <group position={[0, size, 0]} rotation={[foldAngle, 0, 0]}>
-                        <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                            <planeGeometry args={[size, size]} />
+                    {/* Top - attached to front, folds over */}
+                    <group position={[0, 0, size]} rotation={[foldAngle, 0, 0]}>
+                        <mesh position={[0, 0, half]} rotation={[-Math.PI / 2, 0, 0]}>
+                            <planeGeometry args={[size * 0.98, size * 0.98]} />
                             <meshStandardMaterial color={SQUARE_COLORS[2]} side={THREE.DoubleSide} />
                         </mesh>
                     </group>
                 </group>
 
-                {/* Back */}
-                <group position={[0, 0, -halfSize]} rotation={[-foldAngle, 0, 0]}>
-                    <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                        <planeGeometry args={[size, size]} />
+                {/* Back - folds up from back edge */}
+                <group position={[0, 0, -half]} rotation={[-foldAngle, 0, 0]}>
+                    <mesh position={[0, 0, -half]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[size * 0.98, size * 0.98]} />
                         <meshStandardMaterial color={SQUARE_COLORS[3]} side={THREE.DoubleSide} />
                     </mesh>
                 </group>
 
-                {/* Left */}
-                <group position={[-halfSize, 0, 0]} rotation={[0, 0, -foldAngle]}>
-                    <mesh position={[-halfSize, 0, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
-                        <planeGeometry args={[size, size]} />
+                {/* Left - folds up from left edge */}
+                <group position={[-half, 0, 0]} rotation={[0, 0, foldAngle]}>
+                    <mesh position={[-half, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[size * 0.98, size * 0.98]} />
                         <meshStandardMaterial color={SQUARE_COLORS[4]} side={THREE.DoubleSide} />
                     </mesh>
                 </group>
 
-                {/* Right */}
-                <group position={[halfSize, 0, 0]} rotation={[0, 0, foldAngle]}>
-                    <mesh position={[halfSize, 0, 0]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]}>
-                        <planeGeometry args={[size, size]} />
+                {/* Right - folds up from right edge */}
+                <group position={[half, 0, 0]} rotation={[0, 0, -foldAngle]}>
+                    <mesh position={[half, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[size * 0.98, size * 0.98]} />
                         <meshStandardMaterial color={SQUARE_COLORS[5]} side={THREE.DoubleSide} />
                     </mesh>
                 </group>
@@ -120,41 +121,41 @@ function FoldingAttempt({ pattern, progress }: { pattern: string; progress: numb
     // For the line pattern (doesn't work)
     if (pattern === "line") {
         return (
-            <group position={[0, progress * 0.3, 0]}>
+            <group position={[0, progress * half, 0]}>
                 {/* Base - center square */}
-                <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                    <planeGeometry args={[size, size]} />
+                <mesh position={[0, gap, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[size * 0.98, size * 0.98]} />
                     <meshStandardMaterial color={SQUARE_COLORS[2]} side={THREE.DoubleSide} />
                 </mesh>
 
                 {/* Squares folding up in a line - they will collide */}
-                <group position={[0, 0, halfSize]} rotation={[foldAngle, 0, 0]}>
-                    <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                        <planeGeometry args={[size, size]} />
+                <group position={[0, 0, half]} rotation={[foldAngle, 0, 0]}>
+                    <mesh position={[0, 0, half]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[size * 0.98, size * 0.98]} />
                         <meshStandardMaterial color={SQUARE_COLORS[3]} side={THREE.DoubleSide} />
                     </mesh>
-                    <group position={[0, size, 0]} rotation={[foldAngle, 0, 0]}>
-                        <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                            <planeGeometry args={[size, size]} />
+                    <group position={[0, 0, size]} rotation={[foldAngle, 0, 0]}>
+                        <mesh position={[0, 0, half]} rotation={[-Math.PI / 2, 0, 0]}>
+                            <planeGeometry args={[size * 0.98, size * 0.98]} />
                             <meshStandardMaterial color={SQUARE_COLORS[4]} side={THREE.DoubleSide} />
                         </mesh>
-                        <group position={[0, size, 0]} rotation={[foldAngle, 0, 0]}>
-                            <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                                <planeGeometry args={[size, size]} />
+                        <group position={[0, 0, size]} rotation={[foldAngle, 0, 0]}>
+                            <mesh position={[0, 0, half]} rotation={[-Math.PI / 2, 0, 0]}>
+                                <planeGeometry args={[size * 0.98, size * 0.98]} />
                                 <meshStandardMaterial color={progress > 0.6 ? "#ef4444" : SQUARE_COLORS[5]} side={THREE.DoubleSide} opacity={progress > 0.6 ? 0.7 : 1} transparent />
                             </mesh>
                         </group>
                     </group>
                 </group>
 
-                <group position={[0, 0, -halfSize]} rotation={[-foldAngle, 0, 0]}>
-                    <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                        <planeGeometry args={[size, size]} />
+                <group position={[0, 0, -half]} rotation={[-foldAngle, 0, 0]}>
+                    <mesh position={[0, 0, -half]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[size * 0.98, size * 0.98]} />
                         <meshStandardMaterial color={SQUARE_COLORS[1]} side={THREE.DoubleSide} />
                     </mesh>
-                    <group position={[0, size, 0]} rotation={[-foldAngle, 0, 0]}>
-                        <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                            <planeGeometry args={[size, size]} />
+                    <group position={[0, 0, -size]} rotation={[-foldAngle, 0, 0]}>
+                        <mesh position={[0, 0, -half]} rotation={[-Math.PI / 2, 0, 0]}>
+                            <planeGeometry args={[size * 0.98, size * 0.98]} />
                             <meshStandardMaterial color={progress > 0.6 ? "#ef4444" : SQUARE_COLORS[0]} side={THREE.DoubleSide} opacity={progress > 0.6 ? 0.7 : 1} transparent />
                         </mesh>
                     </group>
@@ -179,47 +180,47 @@ function FoldingAttempt({ pattern, progress }: { pattern: string; progress: numb
     // For t-shape (works)
     if (pattern === "t-shape") {
         return (
-            <group position={[0, progress * 0.5, 0]}>
+            <group position={[0, progress * half, 0]}>
                 {/* Base */}
-                <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                    <planeGeometry args={[size, size]} />
+                <mesh position={[0, gap, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[size * 0.98, size * 0.98]} />
                     <meshStandardMaterial color={SQUARE_COLORS[0]} side={THREE.DoubleSide} />
                 </mesh>
 
                 {/* Front - double fold */}
-                <group position={[0, 0, halfSize]} rotation={[foldAngle, 0, 0]}>
-                    <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                        <planeGeometry args={[size, size]} />
+                <group position={[0, 0, half]} rotation={[foldAngle, 0, 0]}>
+                    <mesh position={[0, 0, half]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[size * 0.98, size * 0.98]} />
                         <meshStandardMaterial color={SQUARE_COLORS[1]} side={THREE.DoubleSide} />
                     </mesh>
-                    <group position={[0, size, 0]} rotation={[foldAngle, 0, 0]}>
-                        <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                            <planeGeometry args={[size, size]} />
+                    <group position={[0, 0, size]} rotation={[foldAngle, 0, 0]}>
+                        <mesh position={[0, 0, half]} rotation={[-Math.PI / 2, 0, 0]}>
+                            <planeGeometry args={[size * 0.98, size * 0.98]} />
                             <meshStandardMaterial color={SQUARE_COLORS[5]} side={THREE.DoubleSide} />
                         </mesh>
                     </group>
                 </group>
 
                 {/* Back */}
-                <group position={[0, 0, -halfSize]} rotation={[-foldAngle, 0, 0]}>
-                    <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                        <planeGeometry args={[size, size]} />
+                <group position={[0, 0, -half]} rotation={[-foldAngle, 0, 0]}>
+                    <mesh position={[0, 0, -half]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[size * 0.98, size * 0.98]} />
                         <meshStandardMaterial color={SQUARE_COLORS[2]} side={THREE.DoubleSide} />
                     </mesh>
                 </group>
 
                 {/* Left */}
-                <group position={[-halfSize, 0, 0]} rotation={[0, 0, -foldAngle]}>
-                    <mesh position={[-halfSize, 0, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
-                        <planeGeometry args={[size, size]} />
+                <group position={[-half, 0, 0]} rotation={[0, 0, foldAngle]}>
+                    <mesh position={[-half, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[size * 0.98, size * 0.98]} />
                         <meshStandardMaterial color={SQUARE_COLORS[3]} side={THREE.DoubleSide} />
                     </mesh>
                 </group>
 
                 {/* Right */}
-                <group position={[halfSize, 0, 0]} rotation={[0, 0, foldAngle]}>
-                    <mesh position={[halfSize, 0, 0]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]}>
-                        <planeGeometry args={[size, size]} />
+                <group position={[half, 0, 0]} rotation={[0, 0, -foldAngle]}>
+                    <mesh position={[half, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[size * 0.98, size * 0.98]} />
                         <meshStandardMaterial color={SQUARE_COLORS[4]} side={THREE.DoubleSide} />
                     </mesh>
                 </group>
@@ -227,40 +228,40 @@ function FoldingAttempt({ pattern, progress }: { pattern: string; progress: numb
         );
     }
 
-    // Default: show simple cross for other patterns
+    // Default: show simple cross for other patterns (zigzag, l-shape, stairs)
     return (
-        <group position={[0, progress * 0.5, 0]}>
-            <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                <planeGeometry args={[size, size]} />
+        <group position={[0, progress * half, 0]}>
+            <mesh position={[0, gap, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[size * 0.98, size * 0.98]} />
                 <meshStandardMaterial color={SQUARE_COLORS[0]} side={THREE.DoubleSide} />
             </mesh>
-            <group position={[0, 0, halfSize]} rotation={[foldAngle, 0, 0]}>
-                <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                    <planeGeometry args={[size, size]} />
+            <group position={[0, 0, half]} rotation={[foldAngle, 0, 0]}>
+                <mesh position={[0, 0, half]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[size * 0.98, size * 0.98]} />
                     <meshStandardMaterial color={SQUARE_COLORS[1]} side={THREE.DoubleSide} />
                 </mesh>
-                <group position={[0, size, 0]} rotation={[foldAngle, 0, 0]}>
-                    <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                        <planeGeometry args={[size, size]} />
+                <group position={[0, 0, size]} rotation={[foldAngle, 0, 0]}>
+                    <mesh position={[0, 0, half]} rotation={[-Math.PI / 2, 0, 0]}>
+                        <planeGeometry args={[size * 0.98, size * 0.98]} />
                         <meshStandardMaterial color={SQUARE_COLORS[2]} side={THREE.DoubleSide} />
                     </mesh>
                 </group>
             </group>
-            <group position={[0, 0, -halfSize]} rotation={[-foldAngle, 0, 0]}>
-                <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                    <planeGeometry args={[size, size]} />
+            <group position={[0, 0, -half]} rotation={[-foldAngle, 0, 0]}>
+                <mesh position={[0, 0, -half]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[size * 0.98, size * 0.98]} />
                     <meshStandardMaterial color={SQUARE_COLORS[3]} side={THREE.DoubleSide} />
                 </mesh>
             </group>
-            <group position={[-halfSize, 0, 0]} rotation={[0, 0, -foldAngle]}>
-                <mesh position={[-halfSize, 0, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
-                    <planeGeometry args={[size, size]} />
+            <group position={[-half, 0, 0]} rotation={[0, 0, foldAngle]}>
+                <mesh position={[-half, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[size * 0.98, size * 0.98]} />
                     <meshStandardMaterial color={SQUARE_COLORS[4]} side={THREE.DoubleSide} />
                 </mesh>
             </group>
-            <group position={[halfSize, 0, 0]} rotation={[0, 0, foldAngle]}>
-                <mesh position={[halfSize, 0, 0]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]}>
-                    <planeGeometry args={[size, size]} />
+            <group position={[half, 0, 0]} rotation={[0, 0, -foldAngle]}>
+                <mesh position={[half, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[size * 0.98, size * 0.98]} />
                     <meshStandardMaterial color={SQUARE_COLORS[5]} side={THREE.DoubleSide} />
                 </mesh>
             </group>
