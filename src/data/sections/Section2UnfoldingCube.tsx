@@ -32,56 +32,60 @@ const FACE_COLORS = {
 function FoldingCubeNet({ progress }: { progress: number }) {
     // The cross-shaped net unfolds with the bottom face as the base
     // Progress: 0 = flat net, 1 = complete cube
+    // Net layout (cross shape):
+    //       [top]
+    // [left][bottom][right]
+    //       [front]
+    //       [back]
 
     const foldAngle = (Math.PI / 2) * progress;
 
     // Face dimensions
     const size = 1;
-    const halfSize = size / 2;
 
     return (
         <group position={[0, progress * 0.5, 0]}>
-            {/* Bottom face - stays flat as the base */}
-            <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            {/* Bottom face - stays flat as the base (center of the cross) */}
+            <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
                 <planeGeometry args={[size * 0.98, size * 0.98]} />
                 <meshStandardMaterial color={FACE_COLORS.bottom} side={THREE.DoubleSide} />
             </mesh>
 
+            {/* Top face - folds up from the back edge of bottom (becomes top) */}
+            <group position={[0, 0, -size / 2]} rotation={[-foldAngle, 0, 0]}>
+                <mesh position={[0, 0, -size / 2]} rotation={[-Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[size * 0.98, size * 0.98]} />
+                    <meshStandardMaterial color={FACE_COLORS.top} side={THREE.DoubleSide} />
+                </mesh>
+            </group>
+
             {/* Front face - folds up from the front edge of bottom */}
-            <group position={[0, 0, halfSize]} rotation={[foldAngle, 0, 0]}>
-                <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <group position={[0, 0, size / 2]} rotation={[foldAngle, 0, 0]}>
+                <mesh position={[0, 0, size / 2]} rotation={[-Math.PI / 2, 0, 0]}>
                     <planeGeometry args={[size * 0.98, size * 0.98]} />
                     <meshStandardMaterial color={FACE_COLORS.front} side={THREE.DoubleSide} />
                 </mesh>
 
-                {/* Top face - folds from front face */}
-                <group position={[0, size, 0]} rotation={[foldAngle, 0, 0]}>
-                    <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                {/* Back face - attached to front, folds further to become back of cube */}
+                <group position={[0, 0, size]} rotation={[foldAngle, 0, 0]}>
+                    <mesh position={[0, 0, size / 2]} rotation={[-Math.PI / 2, 0, 0]}>
                         <planeGeometry args={[size * 0.98, size * 0.98]} />
-                        <meshStandardMaterial color={FACE_COLORS.top} side={THREE.DoubleSide} />
+                        <meshStandardMaterial color={FACE_COLORS.back} side={THREE.DoubleSide} />
                     </mesh>
                 </group>
             </group>
 
-            {/* Back face - folds up from the back edge of bottom */}
-            <group position={[0, 0, -halfSize]} rotation={[-foldAngle, 0, 0]}>
-                <mesh position={[0, halfSize, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-                    <planeGeometry args={[size * 0.98, size * 0.98]} />
-                    <meshStandardMaterial color={FACE_COLORS.back} side={THREE.DoubleSide} />
-                </mesh>
-            </group>
-
             {/* Left face - folds up from the left edge of bottom */}
-            <group position={[-halfSize, 0, 0]} rotation={[0, 0, -foldAngle]}>
-                <mesh position={[-halfSize, 0, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+            <group position={[-size / 2, 0, 0]} rotation={[0, 0, -foldAngle]}>
+                <mesh position={[-size / 2, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
                     <planeGeometry args={[size * 0.98, size * 0.98]} />
                     <meshStandardMaterial color={FACE_COLORS.left} side={THREE.DoubleSide} />
                 </mesh>
             </group>
 
             {/* Right face - folds up from the right edge of bottom */}
-            <group position={[halfSize, 0, 0]} rotation={[0, 0, foldAngle]}>
-                <mesh position={[halfSize, 0, 0]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]}>
+            <group position={[size / 2, 0, 0]} rotation={[0, 0, foldAngle]}>
+                <mesh position={[size / 2, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
                     <planeGeometry args={[size * 0.98, size * 0.98]} />
                     <meshStandardMaterial color={FACE_COLORS.right} side={THREE.DoubleSide} />
                 </mesh>
@@ -89,7 +93,7 @@ function FoldingCubeNet({ progress }: { progress: number }) {
 
             {/* Edges - only visible when fully assembled */}
             {progress > 0.9 && (
-                <lineSegments>
+                <lineSegments position={[0, size / 2, 0]}>
                     <edgesGeometry args={[new THREE.BoxGeometry(size, size, size)]} />
                     <lineBasicMaterial color="#475569" />
                 </lineSegments>
