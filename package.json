@@ -2,7 +2,7 @@
   "name": "mathvibe",
   "private": true,
   "version": "1.0.0",
-  "homepage": "https://u31-lesson.mathvibe.space/",
+  "homepage": "https://p3-lesson.mathvibe.space/",
   "type": "module",
   "scripts": {
     "dev": "vite",
